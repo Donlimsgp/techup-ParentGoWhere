@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParentGoWhere</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Link to Google Maps JavaScript API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">
+            <img src="logo.png" alt="ParentGoWhere Logo" />
+            <h1>ParentGoWhere</h1>
+        </div>
+        <div class="menu-icon">
+            <img src="menu-icon.png" alt="Menu Icon">
+        </div>
+    </header>
+
+    <div class="map-container" id="map"></div>
+
+    <section class="recommendations">
+        <h2>Recommendations</h2>
+        <div class="rec-items">
+            <div class="rec-item">
+                <img src="courses.jpg" alt="Courses">
+                <span>Courses</span>
+            </div>
+            <div class="rec-item">
+                <img src="cafes.jpg" alt="Cafes">
+                <span>Cafes</span>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
