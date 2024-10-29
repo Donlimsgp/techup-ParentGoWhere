@@ -1,0 +1,71 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px; 
+    background-color:white;
+    color: white;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 170px;
+    height: 69px;
+    /* margin-right: 10px; */
+}
+
+h1 {
+    font-size: 20px;
+}
+
+.menu-icon img {
+    width: 25px;
+}
+
+.map-container {
+    margin: 10px; 
+    width: 95%;
+    height: 400px;
+}
+
+.recommendations {
+    padding: 2px;
+}
+
+.recommendations h2 {
+    font-size: 20px;
+}
+
+.rec-items {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.rec-item {
+    text-align: center;
+    flex: 1;
+}
+
+.rec-item img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+}
+
+.rec-item span {
+    font-size: 14px;
+}
+
