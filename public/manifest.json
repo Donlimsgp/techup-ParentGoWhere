@@ -1,22 +1,15 @@
 {
-    "name": "ParentGoWhere",
-    "short_name": "ParentGo",
-    "start_url": "/index.html",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#ffffff",
-    "description": "Helping parents find nearby productive activities while their children are in tuition classes.",
-    "icons": [
-      {
-        "src": "./pictures/logo1.png",
-        "sizes": "192x192",
-        "type": "image/png"
-      },
-      {
-        "src": "./pictures/logo1.png",
-        "sizes": "512x512",
-        "type": "image/png"
-      }
-    ]
-  }
-  
+  "name": "ParentGoWhere",
+  "short_name": "ParentGo",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "images/applogo2.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
