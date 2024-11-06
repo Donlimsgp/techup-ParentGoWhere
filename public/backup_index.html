@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParentGoWhere</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <header class="app-header">
+        <div class="logo">
+            <img src="./images/logo1.png" alt="ParentGoWhere Logo" />
+        </div>
+        <div class="menu-icon"></div>
+    </header>
+
+    <div class="map-container" id="map">
+        <!-- Add the Search Box -->
+        <input
+            id="pac-input"
+            class="controls"
+            type="text"
+            placeholder="Search Google Maps"
+            style="position: absolute; top: 10px; left: 50px; z-index: 5; width: 250px; padding: 5px;"
+        />
+    </div>
+
+    <section id="courses-container">
+        <h2>Available Courses</h2>
+        <!-- Course items will be dynamically inserted here -->
+    </section>
+    
+
+    <section class="recommendations">
+        <h2>Recommendations</h2>
+        <div class="rec-items">
+            <div class="rec-item">
+                <!-- Make Baking icon clickable to load in iframe -->
+                <a href="https://www.myskillsfuture.gov.sg/content/portal/en/portal-search/portal-search.html?fq=Course_Supp_Period_To_1%3A%5B2024-10-31T00%3A00%3A00Z%20TO%20*%5D&fq=IsValid%3Atrue&q=Baking" target="_blank">
+                    <img src="./images/Baking.webp" alt="Baking">
+                    <span>Baking</span>
+                </a>
+                
+            </div>
+            <div class="rec-item">
+                <img src="./images/cafe.webp" alt="Cafes">
+                <span>Cafes</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Iframe to load the content within the existing page -->
+    <div id="iframe-container" style="display: none; margin-top: 20px;">
+        <iframe id="content-frame" width="100%" height="500px" style="border: none;"></iframe>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+        // JavaScript function to load content into iframe
+        function loadInIframe(url) {
+            // Get the iframe and container elements
+            const iframe = document.getElementById('content-frame');
+            const container = document.getElementById('iframe-container');
+
+            // Set the URL in the iframe and make the container visible
+            iframe.src = url;
+            container.style.display = 'block';
+        }
+
+        // Fetch the API key from the server
+        fetch('/api-key')
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                // Dynamically load the Google Maps script with the API key and Places library
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${data.apiKey}&libraries=places&callback=initMap`;
+                script.async = true;
+                document.head.appendChild(script);
+            })
+            .catch((error) => {
+                console.error('Error fetching Google Maps API key:', error);
+            });
+    </script>
+    
+    <script src="fetchCourses.js"></script>
+</body>
+</html>
