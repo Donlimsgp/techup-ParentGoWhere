@@ -12,6 +12,11 @@ const PORT = 8000;
 app.use(cors());
 app.use(express.static(path.join(new URL('.', import.meta.url).pathname, '../public')));
 
+app.get('/api-key', (req, res) => {
+    res.json({ apiKey: process.env.GOOGLE_MAPS_API_KEY });
+});
+
+
 // Helper function to get OAuth token
 async function getOAuthToken() {
     const response = await fetch('https://public-api.ssg-wsg.sg/dp-oauth/oauth/token', {
