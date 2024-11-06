@@ -30,11 +30,11 @@ async function getOAuthToken() {
     return data.access_token;
 }
 
-// Route to fetch course details
-app.get('/test-course', async (req, res) => {
+// Route to fetch course details by ID
+app.get('/courses/:courseId', async (req, res) => {
     try {
-        const token = await getOAuthToken(); // Get OAuth token
-        const courseId = 'TGS-2023020611'; // Test Course ID
+        const token = await getOAuthToken();
+        const courseId = req.params.courseId;
         const apiUrl = `https://public-api.ssg-wsg.sg/courses/directory/${courseId}?includeExpiredCourses=true`;
 
         const response = await fetch(apiUrl, {
@@ -50,8 +50,8 @@ app.get('/test-course', async (req, res) => {
         const courseData = await response.json();
         res.json(courseData);
     } catch (error) {
-        console.error('Error fetching test course data:', error);
-        res.status(500).json({ error: 'Failed to fetch test course data' });
+        console.error('Error fetching course data:', error);
+        res.status(500).json({ error: 'Failed to fetch course data' });
     }
 });
 

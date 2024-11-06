@@ -1,49 +1,47 @@
-// fetchCourses.js
+// List of course IDs to fetch
+const courseIds = ["TGS-2023020611", "TGS-2023020612", "TGS-2023020613"]; // Add your course IDs here
 
-// Function to fetch course data from the server
-async function fetchCourseData() {
-    try {
-        const response = await fetch('/test-course'); // Ensure endpoint is correct
-        if (!response.ok) {
-            throw new Error(`Failed to fetch course data: ${response.status}`);
+// Function to fetch course data for multiple courses
+async function fetchMultipleCourses(courseIds) {
+    const coursesContainer = document.getElementById('course-details');
+    coursesContainer.innerHTML = ''; // Clear existing content
+
+    for (const courseId of courseIds) {
+        try {
+            const response = await fetch(`/courses/${courseId}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch course data for ID ${courseId}: ${response.status}`);
+            }
+            const data = await response.json();
+            displayCourse(data, coursesContainer);
+        } catch (error) {
+            console.error(`Error fetching course data for ID ${courseId}:`, error);
         }
-        const jsonData = await response.json();
-        displayCourse(jsonData);
-    } catch (error) {
-        console.error('Error fetching course data:', error);
     }
 }
 
 // Function to display course data on the page
-function displayCourse(data) {
-    // Extract course details from API response
+function displayCourse(data, container) {
     const course = data.data.courses[0];
-
-    // Log the full course object to examine the structure
-    console.log("Full Course Object:", course);
-
-    // Access the first address in the array to get the postal code
     const postalCode = course.trainingProvider?.address?.[0]?.postalCode;
 
-    // Output specific course details to the console for debugging
-    console.log("Course Content:", course.content);
-    console.log("Total Training Duration:", course.totalTrainingDuration);
-    console.log("Training Provider:", course.trainingProvider?.name);
-    console.log("Course Title:", course.title);
-    console.log("Training Cost:", course.trainingCost);
-    console.log("Reference Number:", course.referenceNumber);
-    console.log("Postal Code:", postalCode);
+    // Create a container for each course
+    const courseElement = document.createElement('div');
+    courseElement.classList.add('course-item');
 
-    // Map JSON fields to HTML elements, using optional chaining for nested fields
-    document.getElementById('content').innerText = course.content || "N/A";
-    document.getElementById('trainingDuration').innerText = course.totalTrainingDuration || "N/A";
-    document.getElementById('trainingProvider').innerText = course.trainingProvider?.name || "N/A";
-    document.getElementById('courseTitle').innerText = course.title || "N/A";
-    document.getElementById('trainingCost').innerText = course.trainingCost || "N/A";
-    document.getElementById('referenceNumber').innerText = course.referenceNumber || "N/A";
-    document.getElementById('postalCode').innerText = postalCode || "N/A";
+    courseElement.innerHTML = `
+        <h3>${course.title || "N/A"}</h3>
+        <p><strong>Content:</strong> ${course.content || "N/A"}</p>
+        <p><strong>Total Training Duration:</strong> ${course.totalTrainingDuration || "N/A"}</p>
+        <p><strong>Training Provider:</strong> ${course.trainingProvider?.name || "N/A"}</p>
+        <p><strong>Training Cost:</strong> ${course.trainingCost || "N/A"}</p>
+        <p><strong>Reference Number:</strong> ${course.referenceNumber || "N/A"}</p>
+        <p><strong>Postal Code:</strong> ${postalCode || "N/A"}</p>
+        <hr>
+    `;
+
+    container.appendChild(courseElement);
 }
 
-
-// Fetch course data when the page loads
-document.addEventListener('DOMContentLoaded', fetchCourseData);
+// Call fetchMultipleCourses with the list of course IDs when the page loads
+document.addEventListener('DOMContentLoaded', () => fetchMultipleCourses(courseIds));
