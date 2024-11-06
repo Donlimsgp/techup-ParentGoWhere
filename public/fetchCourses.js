@@ -1,40 +1,66 @@
-// fetchCourses.js
-//const courseIds = ["TGS-2023020611", "TGS-2020501774"]; // Add more course IDs as needed
-const courseIds = ["TGS-2023020611","TGS-2020501774", "TGS-2019508423", "TGS-2024041472", "TGS-2024041390", "TGS-2022015371", "TGS-2022015287", "TGS-2022015361", "TGS-2022015355", "TGS-2022015791", "TGS-2022015795", "TGS-2024041494", "TGS-2022015789", "TGS-2023036448", "TGS-2019504813", "TGS-2024042486", "TGS-2023019071", "TGS-2022017619", "TGS-2019502757", "TGS-2022013430", "TGS-2022017613", "TGS-2019502758", "TGS-2023019952", "TGS-2023036465", "TGS-2022017625", "TGS-2023036461", "TGS-2023028365", "TGS-2022017621", "TGS-2023036449", "TGS-2023036462", "TGS-2023021600", "TGS-2023021616", "TGS-2023028358", "TGS-2023036453", "TGS-2023036463", "TGS-2023021611", "TGS-2023028348", "TGS-2023034565", "TGS-2018500442", "TGS-2022013522", "TGS-2023019379", "TGS-2019502014", "TGS-2021004165", "TGS-2018502547", "TGS-2024046883", "TGS-2021009555", "TGS-2023040192"];
+document.getElementById('fileInput').addEventListener('change', handleFile, false);
 
-// Function to fetch course data from the server
-async function fetchCourseData(courseId) {
-    try {
-        const response = await fetch(`/courses/${courseId}`);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch course data: ${response.status}`);
+let courseIds = [];
+
+function handleFile(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        
+        // Assuming the course IDs are in the first sheet and first column
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const sheetData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+        // Extract course IDs from the first column
+        courseIds = sheetData.map(row => row[0]).filter(id => typeof id === 'string' && id.startsWith('TGS-'));
+
+        // Now you can use the courseIds array
+        console.log("Loaded Course IDs:", courseIds);
+
+        // Optionally: Start fetching course data in chunks if IDs are loaded successfully
+        fetchCoursesInChunks();
+    };
+
+    reader.readAsArrayBuffer(file);
+}
+
+// Function to fetch a batch of course IDs (same as before)
+async function fetchCourseBatch(courseIdBatch) {
+    for (const courseId of courseIdBatch) {
+        try {
+            const response = await fetch(`/courses/${courseId}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch course data: ${response.status}`);
+            }
+            const jsonData = await response.json();
+            displayCourse(jsonData); // Display course data in the table
+        } catch (error) {
+            console.error('Error fetching course data:', error);
         }
-        const jsonData = await response.json();
-        displayCourse(jsonData); // Display course data
-    } catch (error) {
-        console.error('Error fetching course data:', error);
     }
 }
 
-// Fetch data for each course ID
-courseIds.forEach(courseId => fetchCourseData(courseId));
+// Function to process all course IDs in chunks of 20 (same as before)
+function fetchCoursesInChunks() {
+    const chunkSize = 20;
+    for (let i = 0; i < courseIds.length; i += chunkSize) {
+        const courseIdBatch = courseIds.slice(i, i + chunkSize);
+        setTimeout(() => {
+            fetchCourseBatch(courseIdBatch);
+        }, i * 100); // Small delay to avoid overwhelming the server
+    }
+}
 
-// Function to display course data in the table
+// Function to display course data in the table (same as before)
 function displayCourse(data) {
-    // Extract course details from API response
-    const course = data.data?.courses?.[0]; // Adjust based on actual structure
-    
-    // Log the full course object to examine the structure
-    console.log("Full Course Object:", course);
+    const course = data.data?.courses?.[0];
 
-    // Safely access nested properties
-    const postalCode = course?.trainingProvider?.address?.[0]?.postalCode;
-
-    // Create a new row in the table
     const tableBody = document.getElementById('courses-table-body');
     const row = document.createElement('tr');
 
-    // Insert data into row cells
     row.innerHTML = `
         <td>${course?.title || "N/A"}</td>
         <td>${course?.content || "N/A"}</td>
@@ -42,9 +68,8 @@ function displayCourse(data) {
         <td>${course?.trainingProvider?.name || "N/A"}</td>
         <td>${course?.totalCostOfTrainingPerTrainee || "N/A"}</td>
         <td>${course?.referenceNumber || "N/A"}</td>
-        <td>${postalCode || "N/A"}</td>
+        <td>${course?.trainingProvider?.address?.[0]?.postalCode || "N/A"}</td>
     `;
 
-    // Append the new row to the table body
     tableBody.appendChild(row);
 }

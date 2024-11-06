@@ -31,9 +31,15 @@
             max-width: 90%;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 </head>
 <body>
     <h1>Available Course Details</h1>
+
+    <input type="file" id="fileInput" accept=".xlsx" />
+    <button onclick="processFile()">Load Course IDs</button>
+
 
     <div class="table-container">
         <table id="course-table">
