@@ -1,47 +1,42 @@
-// List of course IDs to fetch
-const courseIds = ["TGS-2023020611", "TGS-2023020612", "TGS-2023020613"]; // Add your course IDs here
+// fetchCourses.js
+//const courseIds = ["TGS-2023020611","TGS-2020501774"];
+const courseIds = ["TGS-2023020611"];
 
-// Function to fetch course data for multiple courses
-async function fetchMultipleCourses(courseIds) {
-    const coursesContainer = document.getElementById('course-details');
-    coursesContainer.innerHTML = ''; // Clear existing content
-
-    for (const courseId of courseIds) {
-        try {
-            const response = await fetch(`/courses/${courseId}`);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch course data for ID ${courseId}: ${response.status}`);
-            }
-            const data = await response.json();
-            displayCourse(data, coursesContainer);
-        } catch (error) {
-            console.error(`Error fetching course data for ID ${courseId}:`, error);
+// Function to fetch course data from the server
+async function fetchCourseData() {
+    try {
+        //const response = await fetch('/courses/TGS-2023020611'); // Use correct course ID
+        const response = await fetch(`/courses/${courseIds}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch course data: ${response.status}`);
         }
+        const jsonData = await response.json();
+        displayCourse(jsonData);
+    } catch (error) {
+        console.error('Error fetching course data:', error);
     }
 }
 
 // Function to display course data on the page
-function displayCourse(data, container) {
-    const course = data.data.courses[0];
-    const postalCode = course.trainingProvider?.address?.[0]?.postalCode;
+function displayCourse(data) {
+    // Extract course details from API response
+    const course = data.data?.courses?.[0]; // Adjust based on actual structure
 
-    // Create a container for each course
-    const courseElement = document.createElement('div');
-    courseElement.classList.add('course-item');
+    // Log the full course object to examine the structure
+    console.log("Full Course Object:", course);
 
-    courseElement.innerHTML = `
-        <h3>${course.title || "N/A"}</h3>
-        <p><strong>Content:</strong> ${course.content || "N/A"}</p>
-        <p><strong>Total Training Duration:</strong> ${course.totalTrainingDuration || "N/A"}</p>
-        <p><strong>Training Provider:</strong> ${course.trainingProvider?.name || "N/A"}</p>
-        <p><strong>Training Cost:</strong> ${course.trainingCost || "N/A"}</p>
-        <p><strong>Reference Number:</strong> ${course.referenceNumber || "N/A"}</p>
-        <p><strong>Postal Code:</strong> ${postalCode || "N/A"}</p>
-        <hr>
-    `;
+    // Safely access nested properties
+    const postalCode = course?.trainingProvider?.address?.[0]?.postalCode;
 
-    container.appendChild(courseElement);
+    // Output to HTML using specific IDs for each data point
+    document.getElementById('courseTitle').innerText = course?.title || "N/A";
+    document.getElementById('content').innerText = course?.content || "N/A";
+    document.getElementById('trainingDuration').innerText = course?.totalTrainingDurationHour || "N/A";
+    document.getElementById('trainingProvider').innerText = course?.trainingProvider?.name || "N/A";
+    document.getElementById('trainingCost').innerText = course?.totalCostOfTrainingPerTrainee || "N/A";
+    document.getElementById('referenceNumber').innerText = course?.referenceNumber || "N/A";
+    document.getElementById('postalCode').innerText = postalCode || "N/A";
 }
 
-// Call fetchMultipleCourses with the list of course IDs when the page loads
-document.addEventListener('DOMContentLoaded', () => fetchMultipleCourses(courseIds));
+// Fetch course data when the page loads
+document.addEventListener('DOMContentLoaded', fetchCourseData);
