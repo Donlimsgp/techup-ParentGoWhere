@@ -12,12 +12,7 @@ const PORT = 8000;
 app.use(cors());
 app.use(express.static(path.join(new URL('.', import.meta.url).pathname, '../public')));
 
-app.get('/api-key', (req, res) => {
-    res.json({ apiKey: process.env.GOOGLE_MAPS_API_KEY });
-});
-
-
-// Helper function to get OAuth token
+// Helper function to get OAuth token for SkillsFuture API
 async function getOAuthToken() {
     const response = await fetch('https://public-api.ssg-wsg.sg/dp-oauth/oauth/token', {
         method: 'POST',
@@ -57,6 +52,32 @@ app.get('/courses/:courseId', async (req, res) => {
     } catch (error) {
         console.error('Error fetching course data:', error);
         res.status(500).json({ error: 'Failed to fetch course data' });
+    }
+});
+
+// Route to get coordinates for a postal code
+app.get('/get-coordinates', async (req, res) => {
+    const postalCode = req.query.postalCode;
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+
+    if (!postalCode || !apiKey) {
+        return res.status(400).json({ error: 'Postal code or API key is missing' });
+    }
+
+    try {
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${postalCode}&components=country:SG&key=${apiKey}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.status !== "OK") {
+            throw new Error(data.error_message || 'Failed to fetch coordinates');
+        }
+
+        const location = data.results[0].geometry.location;
+        res.json(location);
+    } catch (error) {
+        console.error('Error fetching coordinates:', error);
+        res.status(500).json({ error: 'Failed to fetch coordinates' });
     }
 });
 

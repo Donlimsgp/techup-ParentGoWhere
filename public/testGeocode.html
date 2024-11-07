@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geocode API Test</title>
+</head>
+<body>
+    <h1>Geocode API Test</h1>
+    <button onclick="testGeocodeAPI()">Test Geocode API</button>
+
+    <script>
+        async function testGeocodeAPI() {
+            const postalCode = "339772"; // Example postal code, you can change it
+            const apiKey = "YOUR_GOOGLE_API_KEY"; // Replace with your actual API key
+            const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${postalCode}&components=country:SG&key=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok && data.status === "OK") {
+                    console.log("API Test Successful! Here is the response:");
+                    console.log(data);
+                    alert("API Test Successful! Check the console for the response.");
+                } else {
+                    console.error("API Test Failed. Response status:", data.status);
+                    console.error(data.error_message || "No error message provided.");
+                    alert("API Test Failed. Check the console for details.");
+                }
+            } catch (error) {
+                console.error("Error connecting to API:", error);
+                alert("Error connecting to API. Check the console for details.");
+            }
+        }
+    </script>
+</body>
+</html>
