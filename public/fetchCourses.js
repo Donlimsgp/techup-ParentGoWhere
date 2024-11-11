@@ -102,31 +102,73 @@ async function calculateAndSortCoursesByDistance() {
     return coursesWithDistance.sort((a, b) => a.distance - b.distance);
 }
 
-function displayCourses(courses) {
-    const tableBody = document.getElementById('courses-table-body');
-    tableBody.innerHTML = ''; // Clear any existing rows
+function displayCourses(courseData) {
+    const courseList = document.getElementById("course-list");
 
-    courses.forEach(course => {
-        const row = document.createElement('tr');
+    // Check if the courseList element exists before proceeding
+    if (!courseList) {
+        console.error("Element with ID 'course-list' not found in HTML.");
+        return;
+    }
 
-        // Retrieve and validate website URL for each course
-        let websiteUrl = course['Website URL'] || "N/A";
-        if (websiteUrl !== "N/A" && !websiteUrl.startsWith("http://") && !websiteUrl.startsWith("https://")) {
-            websiteUrl = "https://" + websiteUrl;
-        }
+    courseList.innerHTML = ""; // Clear any existing content
 
-        row.innerHTML = `
-            <td>${course['Course Title'] || "N/A"}</td>
-            <td>${course['Content'] || "N/A"}</td>
-            <td>${course['Total Training Duration'] || "N/A"}</td>
-            <td>${course['Training Provider'] || "N/A"}</td>
-            <td>${course['Training Cost'] || "N/A"}</td>
-            <td>${course['Reference Number'] || "N/A"}</td>
-            <td>${course['Postal Code'] || "N/A"}</td>
-            <td>${websiteUrl !== "N/A" ? `<a href="${websiteUrl}" target="_blank">${websiteUrl}</a>` : "N/A"}</td>
-            <td>${course.distance ? course.distance.toFixed(2) + " km" : "N/A"}</td>
-        `;
+    courseData.forEach(course => {
+        const courseCard = document.createElement("div");
+        courseCard.classList.add("course-card");
 
-        tableBody.appendChild(row);
+        // Left section
+        const leftSection = document.createElement("div");
+        leftSection.classList.add("left-section");
+
+        // Distance at the top left
+        const distanceItem = document.createElement("p");
+        distanceItem.classList.add("distance-item");
+        distanceItem.innerHTML = `Distance: ${course.distance.toFixed(2)} km`;
+        leftSection.appendChild(distanceItem);
+
+        // Course title
+        const title = document.createElement("h3");
+        title.classList.add("course-title");
+        title.textContent = course["Course Title"];
+        leftSection.appendChild(title);
+
+        // Course content with limited lines
+        const content = document.createElement("p");
+        content.classList.add("course-content");
+        content.textContent = course.Content;
+        leftSection.appendChild(content);
+
+        // Right section
+        const rightSection = document.createElement("div");
+        rightSection.classList.add("right-section");
+
+        // Details in the right section
+        const details = [
+            { label: "Reference", value: course["Reference Number"] },
+            { label: "Training Provider", value: course["Training Provider"] },
+            { label: "Cost", value: course["Training Cost"] },
+            { label: "Duration", value: course["Total Training Duration"] },
+            { label: "Postal Code", value: course["Postal Code"] },
+        ];
+
+        details.forEach(detail => {
+            const detailItem = document.createElement("p");
+            detailItem.classList.add("detail-item");
+            detailItem.innerHTML = `<span>${detail.label}:</span> ${detail.value}`;
+            rightSection.appendChild(detailItem);
+        });
+
+        // Add link to the website URL
+        const link = document.createElement("a");
+        link.href = course["Website URL"];
+        link.target = "_blank";
+        link.textContent = course["Website URL"];
+        rightSection.appendChild(link);
+
+        courseCard.appendChild(leftSection);
+        courseCard.appendChild(rightSection);
+        courseList.appendChild(courseCard);
     });
 }
+
