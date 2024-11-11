@@ -1,5 +1,4 @@
 // Event listeners
-document.getElementById('fileInput').addEventListener('change', handleFile, false);
 document.getElementById('postalCodeInput').addEventListener('change', fetchCoordinatesAndDisplay, false);
 document.getElementById('bakingIcon').addEventListener('click', loadBakingCourses, false);
 
@@ -131,4 +130,3 @@ function displayCourses(courses) {
         tableBody.appendChild(row);
     });
 }
-
