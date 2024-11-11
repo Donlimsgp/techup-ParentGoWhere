@@ -1,119 +1,134 @@
-// Event listener for postal code search
-document.getElementById('searchButton').addEventListener('click', handlePostalCodeSearch, false);
+// Event listeners
+document.getElementById('fileInput').addEventListener('change', handleFile, false);
+document.getElementById('postalCodeInput').addEventListener('change', fetchCoordinatesAndDisplay, false);
+document.getElementById('bakingIcon').addEventListener('click', loadBakingCourses, false);
 
-let originCoordinates = null;
+let courseData = [];
+let userCoordinates = null;
 
-// Function to handle postal code search
-async function handlePostalCodeSearch() {
-    const postalCode = document.getElementById("postalCodeInput").value;
-    if (postalCode) {
-        originCoordinates = await fetchCoordinates(postalCode);
-        if (originCoordinates) {
-            console.log("Origin coordinates:", originCoordinates);
-        } else {
-            alert("Failed to retrieve coordinates for the entered postal code.");
-        }
-    }
+// Function to handle file upload
+function handleFile(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        courseData = XLSX.utils.sheet_to_json(firstSheet);
+        console.log("Loaded course data:", courseData);
+    };
+
+    reader.readAsArrayBuffer(file);
 }
 
-// Function to fetch coordinates based on postal code
-async function fetchCoordinates(postalCode) {
-    const apiKey = "YOUR_GOOGLE_API_KEY";
-    const response = await fetch(`/geocode?postalCode=${postalCode}`);
-    const data = await response.json();
-
-    if (data.results && data.results.length > 0) {
-        const location = data.results[0].geometry.location;
-        return { lat: location.lat, lng: location.lng };
-    } else {
-        console.error("Failed to retrieve coordinates for postal code:", postalCode);
-        return null;
-    }
-}
-
-// Function to load baking courses from Baking.xlsx, calculate distance, and display
+// Function to load and process Baking.xlsx file specifically
 async function loadBakingCourses() {
-    console.log("Baking icon clicked. Attempting to load Baking.xlsx...");
     try {
-        const response = await fetch('CourseData/Baking.xlsx');
+        const response = await fetch('/CourseData/Baking.xlsx');
         const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        
+        const data = new Uint8Array(arrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        courseData = XLSX.utils.sheet_to_json(firstSheet);
+        console.log("Baking course data loaded:", courseData);
 
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const courseData = XLSX.utils.sheet_to_json(worksheet);
-
-        console.log("Course data loaded:", courseData);
-
-        // Get postal code entered by the user
-        const userPostalCode = document.getElementById("postalCodeInput").value.trim();
-        if (!userPostalCode) {
-            alert("Please enter a postal code.");
-            return;
-        }
-
-        // Calculate distances for each course and sort by nearest first
-        const coursesWithDistance = courseData.map(course => {
-            const coursePostalCode = course["Postal Code"];
-            const distance = calculateDistance(userPostalCode, coursePostalCode); // Assuming you have this function
-            return { ...course, distance };
-        }).sort((a, b) => a.distance - b.distance);
-
-        console.log("Courses with calculated distances:", coursesWithDistance);
-
-        // Display courses in the table
-        const tableBody = document.getElementById("courses-table-body");
-        tableBody.innerHTML = ""; // Clear previous data
-
-        coursesWithDistance.forEach(course => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${course["Course Title"] || ""}</td>
-                <td>${course["Content"] || ""}</td>
-                <td>${course["Total Training Duration"] || ""}</td>
-                <td>${course["Training Provider"] || ""}</td>
-                <td>${course["Training Cost"] || ""}</td>
-                <td>${course["Reference Number"] || ""}</td>
-                <td>${course["Postal Code"] || ""}</td>
-                <td><a href="${course["Website URL"] || "#"}" target="_blank">Link</a></td>
-                <td>${course.distance.toFixed(2)} km</td>
-            `;
-            tableBody.appendChild(row);
-        });
-
-        console.log("Course data displayed in the table.");
-
+        fetchCoordinatesAndDisplay(); // Trigger display with the loaded baking courses
     } catch (error) {
         console.error("Error loading Baking.xlsx:", error);
     }
 }
 
+// Function to get coordinates from postal code
+async function fetchCoordinates(postalCode) {
+    const response = await fetch(`/get-coordinates?postalCode=${postalCode}`);
+    const data = await response.json();
 
-// Function to calculate distance between two coordinates
+    if (!response.ok) {
+        console.error('Error fetching coordinates:', data.error);
+        return null;
+    }
+    console.log("User Coordinates:", data);
+    return data;
+}
+
+// Function to calculate distance between two coordinates in km
 function calculateDistance(coord1, coord2) {
     const R = 6371;
-    const dLat = (coord2.lat - coord1.lat) * Math.PI / 180;
-    const dLng = (coord2.lng - coord1.lng) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(coord1.lat * Math.PI / 180) * Math.cos(coord2.lat * Math.PI / 180) *
-              Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const dLat = (coord2.lat - coord1.lat) * (Math.PI / 180);
+    const dLng = (coord2.lng - coord1.lng) * (Math.PI / 180);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(coord1.lat * (Math.PI / 180)) * Math.cos(coord2.lat * (Math.PI / 180)) * Math.sin(dLng / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 }
 
-// Function to display course data in the table
-function displayCourse(course) {
-    const tableBody = document.getElementById('courses-table-body');
-    const row = document.createElement('tr');
+// Function to process postal code input and display sorted courses
+async function fetchCoordinatesAndDisplay() {
+    const postalCode = document.getElementById('postalCodeInput').value;
 
-    row.innerHTML = `
-        <td>${course.title || "N/A"}</td>
-        <td>${course.content || "N/A"}</td>
-        <td>${course.duration || "N/A"}</td>
-        <td>${course.provider || "N/A"}</td>
-        <td>${course.postalCode || "N/A"}</td>
-        <td>${course.distance || "N/A"} km</td>
-    `;
+    if (!postalCode) {
+        alert('Please enter a postal code.');
+        return;
+    }
 
-    tableBody.appendChild(row);
+    userCoordinates = await fetchCoordinates(postalCode);
+    if (!userCoordinates) {
+        console.error('Failed to retrieve user coordinates');
+        return;
+    }
+
+    const coursesWithDistance = await calculateAndSortCoursesByDistance();
+    displayCourses(coursesWithDistance);
 }
+
+// Function to calculate distances for each course and sort
+async function calculateAndSortCoursesByDistance() {
+    const coursesWithDistancePromises = courseData.map(async course => {
+        const coursePostalCode = course["Postal Code"];
+        const courseCoordinates = await fetchCoordinates(coursePostalCode);
+        
+        if (!courseCoordinates) {
+            console.error('Could not fetch course coordinates:', coursePostalCode);
+            return null;
+        }
+
+        const distance = calculateDistance(userCoordinates, courseCoordinates);
+        return { ...course, distance };
+    });
+
+    const coursesWithDistance = (await Promise.all(coursesWithDistancePromises)).filter(Boolean);
+    return coursesWithDistance.sort((a, b) => a.distance - b.distance);
+}
+
+function displayCourses(courses) {
+    const tableBody = document.getElementById('courses-table-body');
+    tableBody.innerHTML = ''; // Clear any existing rows
+
+    courses.forEach(course => {
+        const row = document.createElement('tr');
+
+        // Retrieve and validate website URL for each course
+        let websiteUrl = course['Website URL'] || "N/A";
+        if (websiteUrl !== "N/A" && !websiteUrl.startsWith("http://") && !websiteUrl.startsWith("https://")) {
+            websiteUrl = "https://" + websiteUrl;
+        }
+
+        row.innerHTML = `
+            <td>${course['Course Title'] || "N/A"}</td>
+            <td>${course['Content'] || "N/A"}</td>
+            <td>${course['Total Training Duration'] || "N/A"}</td>
+            <td>${course['Training Provider'] || "N/A"}</td>
+            <td>${course['Training Cost'] || "N/A"}</td>
+            <td>${course['Reference Number'] || "N/A"}</td>
+            <td>${course['Postal Code'] || "N/A"}</td>
+            <td>${websiteUrl !== "N/A" ? `<a href="${websiteUrl}" target="_blank">${websiteUrl}</a>` : "N/A"}</td>
+            <td>${course.distance ? course.distance.toFixed(2) + " km" : "N/A"}</td>
+        `;
+
+        tableBody.appendChild(row);
+    });
+}
+
