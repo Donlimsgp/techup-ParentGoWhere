@@ -22,7 +22,7 @@ function handleFile(event) {
     reader.readAsArrayBuffer(file);
 }
 
-// Function to load and process Baking.xlsx file specifically
+// Function to load and process Baking.xlsx file
 async function loadBakingCourses() {
     try {
         const response = await fetch('/CourseData/Baking.xlsx');
@@ -35,7 +35,7 @@ async function loadBakingCourses() {
         courseData = XLSX.utils.sheet_to_json(firstSheet);
         console.log("Baking course data loaded:", courseData);
 
-        fetchCoordinatesAndDisplay(); // Trigger display with the loaded baking courses
+        fetchCoordinatesAndDisplay();
     } catch (error) {
         console.error("Error loading Baking.xlsx:", error);
     }
@@ -104,71 +104,89 @@ async function calculateAndSortCoursesByDistance() {
 
 function displayCourses(courseData) {
     const courseList = document.getElementById("course-list");
-
-    // Check if the courseList element exists before proceeding
+    
     if (!courseList) {
         console.error("Element with ID 'course-list' not found in HTML.");
         return;
     }
 
-    courseList.innerHTML = ""; // Clear any existing content
+    courseList.innerHTML = "";
+    courseList.className = "course-list";
 
     courseData.forEach(course => {
+        // Create main card container
         const courseCard = document.createElement("div");
-        courseCard.classList.add("course-card");
+        courseCard.className = "course-card";
 
-        // Left section
-        const leftSection = document.createElement("div");
-        leftSection.classList.add("left-section");
+        // Create image section with correct image URL from the Image column
+        const imageContainer = document.createElement("div");
+        imageContainer.className = "course-image-container";
+        
+        const img = document.createElement("img");
+        // Use the Image column URL and append the base URL
+        const baseUrl = "https://www.myskillsfuture.gov.sg";
+        img.src = course["Image"] ? `${baseUrl}${course["Image"]}` : "/api/placeholder/400/320";
+        img.alt = course["Course Title"];
+        img.className = "course-image";
+        
+        img.onerror = function() {
+            this.src = "/api/placeholder/400/320";
+        };
+        
+        imageContainer.appendChild(img);
 
-        // Distance at the top left
-        const distanceItem = document.createElement("p");
-        distanceItem.classList.add("distance-item");
-        distanceItem.innerHTML = `Distance: ${course.distance.toFixed(2)} km`;
-        leftSection.appendChild(distanceItem);
+        // Create content section
+        const content = document.createElement("div");
+        content.className = "course-content";
 
-        // Course title
-        const title = document.createElement("h3");
-        title.classList.add("course-title");
-        title.textContent = course["Course Title"];
-        leftSection.appendChild(title);
+        // Course title as a link
+        const titleLink = document.createElement("a");
+        titleLink.className = "course-title";
+        titleLink.href = `https://www.myskillsfuture.gov.sg/content/portal/en/training-exchange/course-directory/course-detail.html?courseReferenceNumber=${course["Reference Number"]}`;
+        titleLink.target = "_blank";
+        titleLink.rel = "noopener noreferrer";
+        titleLink.textContent = course["Course Title"];
 
-        // Course content with limited lines
-        const content = document.createElement("p");
-        content.classList.add("course-content");
-        content.textContent = course.Content;
-        leftSection.appendChild(content);
+        // Training provider
+        const provider = document.createElement("p");
+        provider.className = "course-provider";
+        provider.textContent = course["Training Provider"];
 
-        // Right section
-        const rightSection = document.createElement("div");
-        rightSection.classList.add("right-section");
+        // Price and distance container
+        const priceDistanceContainer = document.createElement("div");
+        priceDistanceContainer.className = "price-distance-container";
 
-        // Details in the right section
-        const details = [
-            { label: "Reference", value: course["Reference Number"] },
-            { label: "Training Provider", value: course["Training Provider"] },
-            { label: "Cost", value: course["Training Cost"] },
-            { label: "Duration", value: course["Total Training Duration"] },
-            { label: "Postal Code", value: course["Postal Code"] },
-        ];
+        const priceContainer = document.createElement("div");
+        priceContainer.className = "price-container";
+        
+        const priceLabel = document.createElement("span");
+        priceLabel.className = "price-label";
+        priceLabel.textContent = "Full Fee";
+        
+        const price = document.createElement("span");
+        price.className = "price";
+        const formattedPrice = parseFloat(course["Training Cost"])
+            .toFixed(2)
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        price.textContent = `$${formattedPrice}`;
 
-        details.forEach(detail => {
-            const detailItem = document.createElement("p");
-            detailItem.classList.add("detail-item");
-            detailItem.innerHTML = `<span>${detail.label}:</span> ${detail.value}`;
-            rightSection.appendChild(detailItem);
-        });
+        priceContainer.appendChild(priceLabel);
+        priceContainer.appendChild(price);
 
-        // Add link to the website URL
-        const link = document.createElement("a");
-        link.href = course["Website URL"];
-        link.target = "_blank";
-        link.textContent = course["Website URL"];
-        rightSection.appendChild(link);
+        const distance = document.createElement("span");
+        distance.className = "distance-badge";
+        distance.textContent = `${course.distance.toFixed(1)} km`;
 
-        courseCard.appendChild(leftSection);
-        courseCard.appendChild(rightSection);
+        priceDistanceContainer.appendChild(priceContainer);
+        priceDistanceContainer.appendChild(distance);
+
+        // Assemble all elements
+        content.appendChild(titleLink);
+        content.appendChild(provider);
+        content.appendChild(priceDistanceContainer);
+
+        courseCard.appendChild(imageContainer);
+        courseCard.appendChild(content);
         courseList.appendChild(courseCard);
     });
 }
-
