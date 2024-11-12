@@ -5,23 +5,6 @@ document.getElementById('bakingIcon').addEventListener('click', loadBakingCourse
 let courseData = [];
 let userCoordinates = null;
 
-// Function to handle file upload
-function handleFile(event) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function (e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        courseData = XLSX.utils.sheet_to_json(firstSheet);
-        console.log("Loaded course data:", courseData);
-    };
-
-    reader.readAsArrayBuffer(file);
-}
-
 // Function to load and process Baking.xlsx file
 async function loadBakingCourses() {
     try {
@@ -103,12 +86,16 @@ async function calculateAndSortCoursesByDistance() {
 }
 
 function displayCourses(courseData) {
+    const coursesSection = document.getElementById("courses-section");
     const courseList = document.getElementById("course-list");
     
     if (!courseList) {
         console.error("Element with ID 'course-list' not found in HTML.");
         return;
     }
+
+    // Show the courses section
+    coursesSection.style.display = "block";
 
     courseList.innerHTML = "";
     courseList.className = "course-list";
@@ -118,12 +105,11 @@ function displayCourses(courseData) {
         const courseCard = document.createElement("div");
         courseCard.className = "course-card";
 
-        // Create image section with correct image URL from the Image column
+        // Create image section
         const imageContainer = document.createElement("div");
         imageContainer.className = "course-image-container";
         
         const img = document.createElement("img");
-        // Use the Image column URL and append the base URL
         const baseUrl = "https://www.myskillsfuture.gov.sg";
         img.src = course["Image"] ? `${baseUrl}${course["Image"]}` : "/api/placeholder/400/320";
         img.alt = course["Course Title"];

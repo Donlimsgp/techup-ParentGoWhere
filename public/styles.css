@@ -2,8 +2,65 @@
 body {
     margin: 0;
     padding: 0;
-    background: #edd8b8;
     font-family: Arial, sans-serif;
+    background: #fff;
+}
+
+/* Top section with tan background */
+.top-section {
+    background: #edd8b8;
+    padding-bottom: 2rem;
+}
+
+/* Update these styles in your styles.css */
+
+.courses-section h2 {
+    margin: 0;
+    padding: 0;
+    color: #4262af;  /* Update to match MySkillsFuture blue */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+/* Update the blue underline */
+.courses-section h2::after {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    bottom: 0;
+    width: 21rem;  /* Make the blue line longer */
+    height: 3px;
+    background-color: #4262af;  /* Match the text color */
+}
+
+/* Add the horizontal grey line */
+.courses-section {
+    background: #fff;
+    padding: 2rem 0;
+    position: relative;
+}
+
+/* Add the grey horizontal line */
+.courses-section::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 70px;  /* Adjust this value to align with the bottom of the heading */
+    height: 1px;
+    background-color: #e5e7eb;  /* Light grey color */
+    z-index: 1;
+}
+
+/* Ensure the blue line appears above the grey line */
+.courses-section h2 {
+    position: relative;
+    z-index: 2;
 }
 
 /* Centered Content Styling */
@@ -27,25 +84,11 @@ body {
 
 .search-container input[type="text"] {
     border: none;
-    padding: 5px 10px;
+    padding: 5px 15px;
     font-size: 16px;
     outline: none;
-    flex: 1;
-    border-radius: 25px 0 0 25px;
+    width: 100%;
     text-align: center;
-    height: 100%;
-}
-
-.search-container button {
-    background-color: #4285f4;
-    border: none;
-    padding: 0 12px;
-    cursor: pointer;
-    color: white;
-    border-radius: 0 25px 25px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100%;
 }
 
@@ -93,7 +136,9 @@ body {
     flex-wrap: wrap;
     gap: 1.5rem;
     padding: 1rem;
-    justify-content: center;
+    justify-content: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .course-card {
@@ -179,9 +224,4 @@ body {
     color: #0369a1;
     padding: 0.5rem 0.75rem;
     border-radius: 0.5rem;
-    transition: background-color 0.2s ease;
-}
-
-.distance-badge:hover {
-    background-color: #bae6fd;
 }

@@ -4,59 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parent GoWhere</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="styles.css">
-    <script src="fetchCourses.js" defer></script>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C3QFE4C52F"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-C3QFE4C52F');
-    </script>
 </head>
 <body>
-    <main>
-        <!-- Banner Image -->
+    <div class="top-section">
         <img src="images/Banner5.png" alt="Parent GoWhere Banner" style="width:100%; height: auto; display: block; margin: 0 auto 20px;">
 
-        <h2 class="centered-content">Enter Your Postal Code to Search for Courses Nearby</h2>
         <div class="centered-content">
+            <h2>Enter Your Postal Code to Search for Courses Nearby</h2>
             <div class="search-container">
-                <input type="text" id="postalCodeInput" placeholder="Enter Postal Code Here">
+                <input type="text" id="postalCodeInput" placeholder="Enter postal code">
             </div>
         </div>
-        <br />
 
-        <!-- Icon Grid for Course Categories -->
-        <section class="icon-grid">
-            <div class="icon-item" id="artCraftIcon">
+        <div class="icon-grid">
+            <div id="artCraftIcon" class="icon-item">
                 <img src="images/Art.png" alt="Art & Craft">
-                <!-- <img src="https://www.myskillsfuture.gov.sg/content/dam/portal/tex/aot/hero/21_9.jpg" alt="Art & Craft"> -->
             </div>
-            <div class="icon-item" id="bakingIcon" onclick="loadBakingCourses()">
+            <div id="bakingIcon" class="icon-item">
                 <img src="images/Baking3.png" alt="Baking">
             </div>
-            <div class="icon-item" id="fitnessIcon">
+            <div id="fitnessIcon" class="icon-item">
                 <img src="images/Fitness.png" alt="Fitness">
             </div>
-            <div class="icon-item" id="photographyIcon">
+            <div id="photographyIcon" class="icon-item">
                 <img src="images/Photography.png" alt="Photography">
             </div>
-        </section>
-
-        <div id="app">
-            <!-- Other sections remain the same -->
-            
-            <h2>Courses You Might Be Interested In</h2>
-            <div id="course-list" class="course-list"></div>
-
         </div>
-        
-        
-    </main>
+    </div>
+
+    <div id="courses-section" class="courses-section" style="display: none;">
+        <h2>Courses You Might Be Interested In</h2>
+        <div id="course-list" class="course-list">
+            <!-- Course cards will be added here -->
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="fetchCourses.js"></script>
 </body>
 </html>
