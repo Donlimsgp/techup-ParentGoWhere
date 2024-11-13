@@ -18,6 +18,57 @@ body {
     margin: 0;
     padding: 0;
 }
+/* Styling for Course Card Header */
+.courses-section h2 {
+    margin: 0;
+    padding: 0;
+    color: #4262af;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.courses-section h2::after {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    bottom: 0;
+    width: 21rem;
+    height: 3px;
+    background-color: #4262af;
+}
+
+.courses-section {
+    background: #fff;
+    padding: 2rem 0;
+    position: relative;
+}
+
+.courses-section::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 70px;
+    height: 1px;
+    background-color: #e5e7eb;
+    z-index: 1;
+}
+
+.courses-section h2 {
+    position: relative;
+    z-index: 2;
+}
+
+/* Ensures the header and lines appear properly */
+.courses-section h2 {
+    position: relative;
+    z-index: 2;
+}
 
 /* Make the banner taller on mobile screens */
 @media (max-width: 600px) {
@@ -28,7 +79,7 @@ body {
         padding-top: 0; /* Remove top padding for small screens */
     }
     body {
-        margin-top: 0px; /* Match the height of the banner on mobile */
+        margin-top: 15px; /* Match the height of the banner on mobile */
     }
     .centered-content h3 {
         margin-top: -5px; /* Fine-tune if there’s still a small gap */
@@ -65,21 +116,21 @@ body {
 /* Responsive adjustments for large screens */
 @media (min-width: 1024px) {
     .centered-content h3 {
-        margin-top: 10px;
+        margin-top: 15px;
     }
 }
 
 /* Responsive adjustments for extra-large screens */
 @media (min-width: 1440px) {
     .centered-content h3 {
-        margin-top: 50px;
+        margin-top: 60px;
     }
 }
 
 /* Responsive adjustments for extra-large screens */
-@media (min-width: 2000px) {
+@media (min-width: 1840px) {
     .centered-content h3 {
-        margin-top: 150px;
+        margin-top: 130px;
     }
 }
 
@@ -129,7 +180,7 @@ body {
 }
 
 .icon-item img {
-    width: 100%;
+    width: 200%;
     max-width: 250px;
     border-radius: 20px;
 }
