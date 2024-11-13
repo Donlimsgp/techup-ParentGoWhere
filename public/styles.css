@@ -4,57 +4,38 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
     background: #fff;
+    margin-top: 100px; /* Default margin for larger screens */
 }
 
-/* Top section with tan background */
+/* Fixed position only for the banner image */
+#fixed-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    margin: 0; /* Ensure no extra margin */
+    padding: 0; /* Ensure no extra padding */
+}
+
+/* Top section without fixed position */
 .top-section {
     background: #edd8b8;
-    padding-bottom: 2rem;
-}
-
-.courses-section h2 {
-    margin: 0;
-    padding: 0;
-    color: #4262af;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    position: relative;
+    padding-top: 20px; /* Default padding for larger screens */
     padding-bottom: 1rem;
 }
 
-.courses-section h2::after {
-    content: '';
-    position: absolute;
-    left: 1rem;
-    bottom: 0;
-    width: 21rem;
-    height: 3px;
-    background-color: #4262af;
-}
-
-.courses-section {
-    background: #fff;
-    padding: 2rem 0;
-    position: relative;
-}
-
-.courses-section::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 70px;
-    height: 1px;
-    background-color: #e5e7eb;
-    z-index: 1;
-}
-
-.courses-section h2 {
-    position: relative;
-    z-index: 2;
+/* Remove padding and adjust body margin for small screens */
+@media (max-width: 600px) {
+    .top-section {
+        padding-top: 0; /* Remove padding for smaller screens to eliminate white space */
+    }
+    body {
+        margin-top: 80px; /* Adjust margin for smaller screens */
+    }
+    .centered-content h3 {
+        margin-top: -5px; /* Fine-tune if there’s still a small gap */
+    }
 }
 
 /* Centered Content Styling */
@@ -62,7 +43,33 @@ body {
     text-align: center;
     margin: 0 auto;
     max-width: 80%;
-    margin-bottom: 1rem; /* Added margin below the search container */
+    margin-bottom: 0.5rem; /* Reduced bottom margin */
+}
+
+/* Default margin-top for smaller screens */
+.centered-content h3 {
+    margin-top: 30px;
+}
+
+/* Responsive adjustments for medium screens */
+@media (min-width: 768px) {
+    .centered-content h3 {
+        margin-top: 40px;
+    }
+}
+
+/* Responsive adjustments for large screens */
+@media (min-width: 1024px) {
+    .centered-content h3 {
+        margin-top: 50px;
+    }
+}
+
+/* Responsive adjustments for extra-large screens */
+@media (min-width: 1440px) {
+    .centered-content h3 {
+        margin-top: 60px;
+    }
 }
 
 /* Search Container */
@@ -75,7 +82,7 @@ body {
     background-color: white;
     width: 300px;
     height: 36px;
-    margin-bottom: 1rem; /* Added margin below search input */
+    margin-bottom: 1rem;
 }
 
 .search-container input[type="text"] {
@@ -95,7 +102,7 @@ body {
     column-gap: 100px;
     row-gap: 20px;
     max-width: 500px;
-    margin: 1rem auto 0; /* Increased top margin */
+    margin: 1rem auto 0;
     padding-top: 5px;
 }
 
@@ -225,7 +232,7 @@ body {
     border-radius: 0.5rem;
 }
 
-/* Add these styles to your existing CSS */
+/* Loader styling */
 .loader-container {
     display: none;
     justify-content: center;
@@ -239,7 +246,6 @@ body {
     border: 5px solid #f3f3f3;
     border-radius: 50%;
     border-top: 5px solid #4262af;
-    -webkit-animation: spin 1s linear infinite;
     animation: spin 1s linear infinite;
 }
 
