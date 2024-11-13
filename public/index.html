@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="top-section">
-        <img src="images/Banner5.png" alt="Parent GoWhere Banner" style="width:100%; height: auto; display: block; margin: 0 auto 20px;">
+        <img src="images/Banner6.png" alt="Parent GoWhere Banner" style="width:100%; height: auto; display: block; margin: 0 auto 20px;">
 
         <div class="centered-content">
             <h2>Enter Your Postal Code to Search for Courses Nearby</h2>
@@ -33,11 +33,15 @@
         </div>
     </div>
 
+    <div id="loader-container" class="loader-container">
+        <div class="loader"></div>
+        <span class="loader-text">Loading courses...</span>
+    </div>
+    
+
     <div id="courses-section" class="courses-section" style="display: none;">
-        <h2>Courses You Might Be Interested In</h2>
-        <div id="course-list" class="course-list">
-            <!-- Course cards will be added here -->
-        </div>
+        <h2></h2>
+        <div id="course-list" class="course-list"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

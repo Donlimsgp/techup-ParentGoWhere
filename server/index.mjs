@@ -55,7 +55,7 @@ app.get('/courses/:courseId', async (req, res) => {
     }
 });
 
-// Route to get coordinates for a postal code
+// Updated route to get coordinates and street name
 app.get('/get-coordinates', async (req, res) => {
     const postalCode = req.query.postalCode;
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
@@ -65,7 +65,7 @@ app.get('/get-coordinates', async (req, res) => {
     }
 
     try {
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${postalCode}&components=country:SG&key=${apiKey}`;
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${postalCode}&components=postal_code:${postalCode}|country:SG&key=${apiKey}`;
         const response = await fetch(url);
         const data = await response.json();
 
@@ -74,7 +74,57 @@ app.get('/get-coordinates', async (req, res) => {
         }
 
         const location = data.results[0].geometry.location;
-        res.json(location);
+        let streetName = '';
+
+        // Extract street name from address components
+        const addressComponents = data.results[0].address_components;
+        for (const component of addressComponents) {
+            // Look for the route (street name) component
+            if (component.types.includes('route')) {
+                streetName = component.long_name;
+                break;
+            }
+        }
+
+        // If no street name found, try to get the neighborhood or sublocality
+        if (!streetName) {
+            for (const component of addressComponents) {
+                if (component.types.includes('neighborhood') || 
+                    component.types.includes('sublocality_level_1')) {
+                    streetName = component.long_name;
+                    break;
+                }
+            }
+        }
+
+        // If still no street name found, try premise or establishment
+        if (!streetName) {
+            for (const component of addressComponents) {
+                if (component.types.includes('premise') || 
+                    component.types.includes('establishment') ||
+                    component.types.includes('sublocality_level_2')) {
+                    streetName = component.long_name;
+                    break;
+                }
+            }
+        }
+
+        // If still nothing found, use the first part of the formatted address
+        if (!streetName && data.results[0].formatted_address) {
+            streetName = data.results[0].formatted_address.split(',')[0];
+        }
+
+        // Clean up the street name
+        streetName = streetName
+            .replace(/Singapore/g, '')
+            .replace(/\d{6}/, '')
+            .trim();
+
+        // Return both coordinates and street name
+        res.json({
+            ...location,
+            address: streetName || 'Singapore'
+        });
     } catch (error) {
         console.error('Error fetching coordinates:', error);
         res.status(500).json({ error: 'Failed to fetch coordinates' });

@@ -1,14 +1,41 @@
-// Event listeners
-document.getElementById('postalCodeInput').addEventListener('change', fetchCoordinatesAndDisplay, false);
-document.getElementById('bakingIcon').addEventListener('click', loadBakingCourses, false);
+// Helper function to get full category name
+function getFullCategoryName(category) {
+    const categoryMapping = {
+        'Arts': 'Art and Craft',
+        'Baking': 'Baking',
+        'Fitness': 'Fitness',
+        'Photography': 'Photography'
+    };
+    return categoryMapping[category] || category;
+}
 
+// Event listeners for all icons
+document.getElementById('postalCodeInput').addEventListener('change', fetchCoordinatesAndDisplay, false);
+document.getElementById('artCraftIcon').addEventListener('click', () => loadCourses('Arts'), false);
+document.getElementById('bakingIcon').addEventListener('click', () => loadCourses('Baking'), false);
+document.getElementById('fitnessIcon').addEventListener('click', () => loadCourses('Fitness'), false);
+document.getElementById('photographyIcon').addEventListener('click', () => loadCourses('Photography'), false);
+
+// State variables
 let courseData = [];
 let userCoordinates = null;
+let currentCategory = null;
+let isLoading = false;
+let userLocation = '';
 
-// Function to load and process Baking.xlsx file
-async function loadBakingCourses() {
+// Function to load and process course data from Excel files
+async function loadCourses(category) {
     try {
-        const response = await fetch('/CourseData/Baking.xlsx');
+        // Show loading state
+        setLoading(true);
+        
+        // Update current category
+        currentCategory = category;
+        
+        // Show visual feedback on selected icon
+        updateSelectedIcon(category);
+        
+        const response = await fetch(`/CourseData/${category}.xlsx`);
         const arrayBuffer = await response.arrayBuffer();
         
         const data = new Uint8Array(arrayBuffer);
@@ -16,16 +43,53 @@ async function loadBakingCourses() {
         
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         courseData = XLSX.utils.sheet_to_json(firstSheet);
-        console.log("Baking course data loaded:", courseData);
-
-        fetchCoordinatesAndDisplay();
+        
+        await fetchCoordinatesAndDisplay();
     } catch (error) {
-        console.error("Error loading Baking.xlsx:", error);
+        console.error(`Error loading ${category}.xlsx:`, error);
+        displayCourses([]); // Pass empty array to clear display on error
+    } finally {
+        // Hide loading state
+        setLoading(false);
+    }
+}
+
+// Function to manage loading state
+function setLoading(loading) {
+    isLoading = loading;
+    const loaderContainer = document.getElementById('loader-container');
+    const coursesSection = document.getElementById('courses-section');
+    
+    if (loading) {
+        loaderContainer.style.display = 'flex';
+        coursesSection.style.display = 'none';
+    } else {
+        loaderContainer.style.display = 'none';
+        // Don't set courses-section display here as it's managed by displayCourses
+    }
+}
+
+// Function to update visual feedback for selected icon
+function updateSelectedIcon(category) {
+    // Remove highlight from all icons
+    ['artCraftIcon', 'bakingIcon', 'fitnessIcon', 'photographyIcon'].forEach(iconId => {
+        const icon = document.getElementById(iconId);
+        icon.style.opacity = '0.7';
+        icon.style.transform = 'scale(1)';
+    });
+    
+    // Highlight selected icon
+    const selectedIconId = `${category.toLowerCase()}Icon`.replace('arts', 'artCraft');
+    const selectedIcon = document.getElementById(selectedIconId);
+    if (selectedIcon) {
+        selectedIcon.style.opacity = '1';
+        selectedIcon.style.transform = 'scale(1.1)';
     }
 }
 
 // Function to get coordinates from postal code
 async function fetchCoordinates(postalCode) {
+    const userInputPostalCode = document.getElementById('postalCodeInput').value;
     const response = await fetch(`/get-coordinates?postalCode=${postalCode}`);
     const data = await response.json();
 
@@ -33,7 +97,12 @@ async function fetchCoordinates(postalCode) {
         console.error('Error fetching coordinates:', data.error);
         return null;
     }
-    console.log("User Coordinates:", data);
+
+    // Only update userLocation if this is the user's input postal code
+    if (postalCode === userInputPostalCode && data.address) {
+        userLocation = data.address;
+    }
+
     return data;
 }
 
@@ -53,17 +122,33 @@ async function fetchCoordinatesAndDisplay() {
 
     if (!postalCode) {
         alert('Please enter a postal code.');
+        setLoading(false);
         return;
     }
 
-    userCoordinates = await fetchCoordinates(postalCode);
-    if (!userCoordinates) {
-        console.error('Failed to retrieve user coordinates');
-        return;
-    }
+    // if (!currentCategory) {
+    //     alert('Please select a course category.');
+    //     setLoading(false);
+    //     return;
+    // }
 
-    const coursesWithDistance = await calculateAndSortCoursesByDistance();
-    displayCourses(coursesWithDistance);
+    try {
+        // Reset userLocation before fetching new coordinates
+        userLocation = '';
+        
+        userCoordinates = await fetchCoordinates(postalCode);
+        if (!userCoordinates) {
+            console.error('Failed to retrieve user coordinates');
+            displayCourses([]);
+            return;
+        }
+
+        const coursesWithDistance = await calculateAndSortCoursesByDistance();
+        displayCourses(coursesWithDistance);
+    } catch (error) {
+        console.error('Error fetching coordinates or calculating distances:', error);
+        displayCourses([]);
+    }
 }
 
 // Function to calculate distances for each course and sort
@@ -94,11 +179,25 @@ function displayCourses(courseData) {
         return;
     }
 
-    // Show the courses section
-    coursesSection.style.display = "block";
-
+    // Clear existing courses
     courseList.innerHTML = "";
     courseList.className = "course-list";
+
+    // Update section title and visibility
+    const sectionTitle = coursesSection.querySelector('h2');
+    if (courseData && courseData.length > 0) {
+        if (sectionTitle) {
+            const fullCategoryName = getFullCategoryName(currentCategory);
+            sectionTitle.textContent = `${fullCategoryName} Courses Near ${userLocation}`;
+        }
+        coursesSection.style.display = "block";
+    } else {
+        if (sectionTitle) {
+            sectionTitle.textContent = '';
+        }
+        coursesSection.style.display = "none";
+        return;
+    }
 
     courseData.forEach(course => {
         // Create main card container
