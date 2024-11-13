@@ -13,9 +13,26 @@ body {
     top: 0;
     left: 0;
     width: 100%;
+    height: auto;
     z-index: 1000;
-    margin: 0; /* Ensure no extra margin */
-    padding: 0; /* Ensure no extra padding */
+    margin: 0;
+    padding: 0;
+}
+
+/* Make the banner taller on mobile screens */
+@media (max-width: 600px) {
+    #fixed-banner {
+        height: 150px; /* Set a taller height for mobile */
+    }
+    .top-section {
+        padding-top: 0; /* Remove top padding for small screens */
+    }
+    body {
+        margin-top: 15px; /* Match the height of the banner on mobile */
+    }
+    .centered-content h3 {
+        margin-top: -5px; /* Fine-tune if there’s still a small gap */
+    }
 }
 
 /* Top section without fixed position */
@@ -23,19 +40,6 @@ body {
     background: #edd8b8;
     padding-top: 20px; /* Default padding for larger screens */
     padding-bottom: 1rem;
-}
-
-/* Remove padding and adjust body margin for small screens */
-@media (max-width: 600px) {
-    .top-section {
-        padding-top: 0; /* Remove padding for smaller screens to eliminate white space */
-    }
-    body {
-        margin-top: 80px; /* Adjust margin for smaller screens */
-    }
-    .centered-content h3 {
-        margin-top: -5px; /* Fine-tune if there’s still a small gap */
-    }
 }
 
 /* Centered Content Styling */
@@ -61,14 +65,21 @@ body {
 /* Responsive adjustments for large screens */
 @media (min-width: 1024px) {
     .centered-content h3 {
-        margin-top: 50px;
+        margin-top: 10px;
     }
 }
 
 /* Responsive adjustments for extra-large screens */
 @media (min-width: 1440px) {
     .centered-content h3 {
-        margin-top: 60px;
+        margin-top: 50px;
+    }
+}
+
+/* Responsive adjustments for extra-large screens */
+@media (min-width: 2000px) {
+    .centered-content h3 {
+        margin-top: 150px;
     }
 }
 
