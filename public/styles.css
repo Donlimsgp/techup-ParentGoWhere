@@ -28,7 +28,7 @@ body {
         padding-top: 0; /* Remove top padding for small screens */
     }
     body {
-        margin-top: 15px; /* Match the height of the banner on mobile */
+        margin-top: 0px; /* Match the height of the banner on mobile */
     }
     .centered-content h3 {
         margin-top: -5px; /* Fine-tune if there’s still a small gap */
