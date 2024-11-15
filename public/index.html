@@ -4,32 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parent GoWhere</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-   
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C3QFE4C52F"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-C3QFE4C52F');
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-    <!-- Fixed banner image -->
-    <img id="fixed-banner" src="images/Banner7.png" alt="Parent GoWhere Banner" style="width:100%; height: auto; display: block;">
+    <img src="images/Banner7.png" id="fixed-banner" alt="Parent GoWhere Banner" style="width:100%; height: auto; display: block;">
 
-    <!-- Top section with icons and input, scrollable content -->
     <div class="top-section">
         <div class="centered-content">
             <h3>Enter your postal code and select an icon to find nearby courses</h3>
             <div class="search-container">
-                <input type="text" id="postalCodeInput" placeholder="Enter postal code">
+                <input type="text" id="postalCodeInput" placeholder="Enter Postal Code">
             </div>
         </div>
 
-        <!-- Icon grid section -->
         <div class="icon-grid">
             <div id="artCraftIcon" class="icon-item">
                 <img src="images/Art2.png" alt="Art & Craft">
@@ -46,20 +35,23 @@
         </div>
     </div>
 
-    <!-- Loading spinner -->
     <div id="loader-container" class="loader-container">
         <div class="loader"></div>
         <span class="loader-text">Loading courses...</span>
     </div>
-    
-    <!-- Courses section -->
+
     <div id="courses-section" class="courses-section" style="display: none;">
         <h2></h2>
         <div id="course-list" class="course-list"></div>
     </div>
 
-    <!-- Script imports -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <footer class="footer">
+        <div class="footer-content">
+            <p><i class="fas fa-info-circle"></i> Disclaimer:</p>
+            <p>This website is created for learning purposes only. The information provided here should not be considered professional advice. Please note that we make no guarantees regarding the accuracy, completeness, or reliability of the contents of this website. Any actions you take based on the contents of this website are at your own risk. We are not liable for any losses or damages incurred from the use of this website.</p>
+        </div>
+    </footer>
+
     <script src="fetchCourses.js"></script>
 </body>
 </html>

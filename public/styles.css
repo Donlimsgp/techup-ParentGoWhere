@@ -4,10 +4,11 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
     background: #fff;
-    margin-top: 100px; /* Default margin for larger screens */
+    margin-top: 100px;
+    margin-bottom: 90px;
 }
 
-/* Fixed position only for the banner image */
+/* Fixed position banner image */
 #fixed-banner {
     position: fixed;
     top: 0;
@@ -18,7 +19,36 @@ body {
     margin: 0;
     padding: 0;
 }
-/* Styling for Course Card Header */
+
+/* Footer styling */
+.footer {
+    background-color: #f0f5ff;
+    padding: 0.5rem;  /* Changed from 1rem to 0.5rem */
+    text-align: left;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid #e5e7eb;
+    z-index: 2000; /* Higher than other elements */
+}
+
+.footer-content i {
+    color: #4a5568;
+    margin-right: 5px;
+}
+
+/* Also adjust the font size and line height in footer-content */
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    color: #4a5568;
+    font-size: 0.75rem;  /* Reduced from 0.875rem */
+    line-height: 1.2;    /* Reduced from 1.5 */
+}
+
+
+/* Course Card Header */
 .courses-section h2 {
     margin: 0;
     padding: 0;
@@ -64,70 +94,60 @@ body {
     z-index: 2;
 }
 
-/* Ensures the header and lines appear properly */
-.courses-section h2 {
-    position: relative;
-    z-index: 2;
-}
-
-/* Make the banner taller on mobile screens */
+/* Mobile responsiveness */
 @media (max-width: 600px) {
     #fixed-banner {
-        height: 150px; /* Set a taller height for mobile */
+        height: 150px;
     }
     .top-section {
-        padding-top: 0; /* Remove top padding for small screens */
+        padding-top: 0;
     }
     body {
-        margin-top: 15px; /* Match the height of the banner on mobile */
+        margin-top: 15px;
     }
     .centered-content h3 {
-        margin-top: -5px; /* Fine-tune if there’s still a small gap */
+        margin-top: -5px;
     }
 }
 
-/* Top section without fixed position */
+/* Top section */
 .top-section {
     background: #edd8b8;
-    padding-top: 20px; /* Default padding for larger screens */
+    padding-top: 20px;
     padding-bottom: 1rem;
 }
 
-/* Centered Content Styling */
+/* Centered Content */
 .centered-content {
     text-align: center;
     margin: 0 auto;
     max-width: 80%;
-    margin-bottom: 0.5rem; /* Reduced bottom margin */
+    margin-bottom: 0.5rem;
 }
 
-/* Default margin-top for smaller screens */
 .centered-content h3 {
     margin-top: 30px;
 }
 
-/* Responsive adjustments for medium screens */
+/* Responsive margins */
 @media (min-width: 768px) {
     .centered-content h3 {
         margin-top: 40px;
     }
 }
 
-/* Responsive adjustments for large screens */
 @media (min-width: 1024px) {
     .centered-content h3 {
         margin-top: 15px;
     }
 }
 
-/* Responsive adjustments for extra-large screens */
 @media (min-width: 1440px) {
     .centered-content h3 {
         margin-top: 60px;
     }
 }
 
-/* Responsive adjustments for extra-large screens */
 @media (min-width: 1840px) {
     .centered-content h3 {
         margin-top: 130px;
@@ -294,7 +314,7 @@ body {
     border-radius: 0.5rem;
 }
 
-/* Loader styling */
+/* Loader */
 .loader-container {
     display: none;
     justify-content: center;
@@ -316,7 +336,6 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Optional loading text style */
 .loader-text {
     margin-left: 1rem;
     color: #4262af;
