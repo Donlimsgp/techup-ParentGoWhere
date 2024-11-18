@@ -5,7 +5,6 @@ body {
     font-family: Arial, sans-serif;
     background: #fff;
     margin-top: 100px;
-    margin-bottom: 90px;
 }
 
 /* Fixed position banner image */
@@ -20,33 +19,35 @@ body {
     padding: 0;
 }
 
-/* Footer styling */
-.footer {
+/* Disclaimer styling */
+.disclaimer-section {
     background-color: #f0f5ff;
-    padding: 0.5rem;  /* Changed from 1rem to 0.5rem */
+    padding: 0.5rem;
     text-align: left;
-    position: fixed;
-    bottom: 0;
     width: 100%;
     border-top: 1px solid #e5e7eb;
-    z-index: 2000; /* Higher than other elements */
 }
 
-.footer-content i {
+.disclaimer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    color: #4a5568;
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+.disclaimer-content i {
     color: #4a5568;
     margin-right: 5px;
 }
 
-/* Also adjust the font size and line height in footer-content */
-.footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    color: #4a5568;
-    font-size: 0.75rem;  /* Reduced from 0.875rem */
-    line-height: 1.2;    /* Reduced from 1.5 */
+/* Add slight spacing after the line break */
+.disclaimer-content br {
+    margin-bottom: 0.5rem;
+    display: block;
+    content: "";
 }
-
 
 /* Course Card Header */
 .courses-section h2 {
@@ -138,19 +139,25 @@ body {
 
 @media (min-width: 1024px) {
     .centered-content h3 {
-        margin-top: 15px;
+        margin-top: 40px;
     }
 }
 
 @media (min-width: 1440px) {
     .centered-content h3 {
-        margin-top: 60px;
+        margin-top: 80px;
     }
 }
 
 @media (min-width: 1840px) {
     .centered-content h3 {
-        margin-top: 130px;
+        margin-top: 100px;
+    }
+}
+
+@media (min-width: 2000px) {
+    .centered-content h3 {
+        margin-top: 160px;
     }
 }
 

@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parent GoWhere</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Parent GoWhere - Find Nearby Courses</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Add Font Awesome for the icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <img src="images/Banner7.png" id="fixed-banner" alt="Parent GoWhere Banner" style="width:100%; height: auto; display: block;">
@@ -15,7 +16,7 @@
         <div class="centered-content">
             <h3>Enter your postal code and select an icon to find nearby courses</h3>
             <div class="search-container">
-                <input type="text" id="postalCodeInput" placeholder="Enter Postal Code">
+                <input type="text" id="postalCodeInput" placeholder="Enter Postal Code" maxlength="6">
             </div>
         </div>
 
@@ -42,15 +43,17 @@
 
     <div id="courses-section" class="courses-section" style="display: none;">
         <h2></h2>
-        <div id="course-list" class="course-list"></div>
+        <div id="course-list" class="course-list">
+        </div>
     </div>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <p><i class="fas fa-info-circle"></i> Disclaimer:</p>
-            <p>This website is created for learning purposes only. The information provided here should not be considered professional advice. Please note that we make no guarantees regarding the accuracy, completeness, or reliability of the contents of this website. Any actions you take based on the contents of this website are at your own risk. We are not liable for any losses or damages incurred from the use of this website.</p>
+    <div class="disclaimer-section">
+        <div class="disclaimer-content">
+            <i class="fas fa-info-circle"></i> Disclaimer:
+            <br>
+            This website is created for learning purposes only. The information provided here should not be considered professional advice. Please note that we make no guarantees regarding the accuracy, completeness, or reliability of the contents of this website. Any actions you take based on the contents of this website are at your own risk. We are not liable for any losses or damages incurred from the use of this website.
         </div>
-    </footer>
+    </div>
 
     <script src="fetchCourses.js"></script>
 </body>
