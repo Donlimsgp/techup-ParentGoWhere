@@ -243,5 +243,5 @@ function displayCourses(courseData) {
     });
 }
 
-console.log(`Window Inner Resolution: ${window.innerWidth} x ${window.innerHeight}`);
-console.log(`Screen Resolution: ${window.screen.width} x ${window.screen.height}`);
+// console.log(`Window Inner Resolution: ${window.innerWidth} x ${window.innerHeight}`);
+// console.log(`Screen Resolution: ${window.screen.width} x ${window.screen.height}`);
