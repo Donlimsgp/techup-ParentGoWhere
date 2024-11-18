@@ -242,3 +242,6 @@ function displayCourses(courseData) {
         courseList.appendChild(courseCard);
     });
 }
+
+console.log(`Window Inner Resolution: ${window.innerWidth} x ${window.innerHeight}`);
+console.log(`Screen Resolution: ${window.screen.width} x ${window.screen.height}`);
