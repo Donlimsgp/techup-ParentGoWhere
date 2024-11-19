@@ -378,3 +378,48 @@ body {
     color: #4262af;
     font-weight: 500;
 }
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #FF5733;
+    width: 56px;  /* Increased size */
+    height: 56px; /* Increased size */
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.scroll-to-top:hover {
+    background-color: #ff4419;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-to-top svg {
+    width: 32px;   /* Increased from 24px */
+    height: 32px;  /* Increased from 24px */
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+    }
+    
+    .scroll-to-top svg {
+        width: 28px;
+        height: 28px;
+    }
+}

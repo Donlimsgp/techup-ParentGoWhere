@@ -9,6 +9,29 @@ function getFullCategoryName(category) {
     return categoryMapping[category] || category;
 }
 
+// Event listeners for all icons and scroll to top
+document.addEventListener('DOMContentLoaded', function() {
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    
+    // Show/hide button based on scroll position
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) { // Show button after scrolling down 300px
+            scrollToTopBtn.style.display = 'flex';
+        } else {
+            scrollToTopBtn.style.display = 'none';
+        }
+    });
+    
+    // Scroll to top with smooth animation
+    scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+});
+
+
 // Event listeners for all icons
 document.getElementById('postalCodeInput').addEventListener('change', fetchCoordinatesAndDisplay, false);
 document.getElementById('artCraftIcon').addEventListener('click', () => loadCourses('Arts'), false);
